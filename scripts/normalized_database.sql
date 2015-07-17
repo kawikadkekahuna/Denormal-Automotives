@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS manufacture
 CREATE TABLE IF NOT EXISTS year
 (
 	id serial NOT NULL,
-  year character varying(4) NOT NULL,
+  year integer NOT NULL,
   PRIMARY KEY (id)
 ); 
 
@@ -30,5 +30,16 @@ CREATE TABLE IF NOT EXISTS model_title
 
 
 INSERT INTO manufacture (make_code,name)
-	SELECT DISTINCT make_code,make_title
-	FROM car_models;
+SELECT DISTINCT make_code,make_title 
+FROM car_models;
+
+INSERT INTO year (year)
+SELECT DISTINCT year
+FROM car_models;
+
+UPDATE car_models SET manufacture_id = (select id from manufacture where car_models.make_code = manufacture.make_code);
+UPDATE car_models SET year_id = (select id from year where car_models.year = year.year);
+
+ALTER TABLE car_models DROP COLUMN make_code;
+ALTER TABLE car_models DROP COLUMN make_title;
+ALTER TABLE car_models DROP COLUMN year;
